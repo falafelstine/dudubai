@@ -297,7 +297,33 @@ def looks_like_phone(text):
     return len(digits) >= 6 and len(digits) >= len(text) * 0.6
 
 # ==================== HANDLERS ====================
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    if is_admin(user_id):
+        text = (
+            "📖 <b>Aide — Admin</b>\n\n"
+            "🔍 <b>Recherche</b>\n"
+            "Envoie un numéro ou un nom.\n\n"
+            "⚙️ <b>Commandes admin</b>\n"
+            "📊 /panel — Tableau de bord\n"
+            "👥 /users — Liste des utilisateurs\n"
+            "🗑️ /remove ID — Retirer un utilisateur\n"
+            "🛡️ /addadmin ID — Ajouter un admin\n"
+            "📜 /logs — Dernières recherches\n"
+            "✏️ /setwelcome — Changer le message d’accueil\n"
+            "📈 /status — Statut rapide\n"
+            "🧹 /reset — Vider la base\n"
+            "❓ /help — Cette aide"
+        )
+    else:
+        text = (
+            "📖 <b>Aide</b>\n\n"
+            "🔍 Envoie un <b>numéro de téléphone</b> ou un <b>nom</b> pour rechercher un contact.\n\n"
+            "Commandes :\n"
+            "▶️ /start — Démarrer\n"
+            "❓ /help — Cette aide"
+        )
+    await update.message.reply_text(text, parse_mode=ParseMode.HTML)
     user = update.effective_user
     user_id = user.id
 
@@ -456,7 +482,8 @@ async def panel(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/logs — Dernières recherches\n"
         "/setwelcome — Changer le message d’accueil\n"
         "/status — Statut rapide\n"
-        "/reset — Vider la base"
+        "/reset — Vider la base\n"
+        "/help — Aide"
     )
     await update.message.reply_text(text, parse_mode=ParseMode.HTML)
 
@@ -634,6 +661,7 @@ async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("help", help_cmd))
     app.add_handler(CommandHandler("status", status))
     app.add_handler(CommandHandler("reset", reset))
     app.add_handler(CommandHandler("panel", panel))
