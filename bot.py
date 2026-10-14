@@ -297,6 +297,22 @@ def looks_like_phone(text):
     return len(digits) >= 6 and len(digits) >= len(text) * 0.6
 
 # ==================== HANDLERS ====================
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    user_id = user.id
+
+    if not is_authorized(user_id):
+        await update.message.reply_text(
+            "🔒 <b>Accès restreint</b>\n"
+            "Ce bot est privé.\n\n"
+            "Envoyez votre clé secrète pour continuer.",
+            parse_mode=ParseMode.HTML
+        )
+        return
+
+    touch_user(user)
+    await update.message.reply_text(settings.get("welcome", "✅ Bienvenue"), parse_mode=ParseMode.HTML)
+
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if is_admin(user_id):
