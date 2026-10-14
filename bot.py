@@ -511,7 +511,12 @@ async def logs_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     lines = ["📜 <b>Dernières recherches</b>\n"]
     for uid, query, stype, res, ts in rows:
-        lines.append(f"<code>{ts[11:16]}</code> {stype} — {query[:30]} ({res}) — {uid}")
+        emoji = "📞" if stype == "phone" else "👤"
+        time_str = ts[11:16] if len(ts) > 16 else ts
+        lines.append(
+            f"{emoji} <code>{time_str}</code>  {query[:35]}\n"
+            f"   → {res} résultat(s)  |  ID: <code>{uid}</code>"
+        )
     await update.message.reply_text("\n".join(lines), parse_mode=ParseMode.HTML)
 
 async def set_welcome(update: Update, context: ContextTypes.DEFAULT_TYPE):
